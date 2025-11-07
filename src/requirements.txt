@@ -1,0 +1,6 @@
+matplotlib
+opencv-python
+ultralytics
+streamlit
+pandas
+requests

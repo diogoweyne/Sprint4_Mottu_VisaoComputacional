@@ -1,0 +1,22 @@
+# Ambiente virtual
+.venv/
+venv/
+env/
+
+# Arquivos temporários
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Configurações de IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Logs
+*.log
+
+# Dados gerados em execução
+runs/
+outputs/
