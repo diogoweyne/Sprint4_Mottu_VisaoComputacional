@@ -5,7 +5,7 @@ A solução foi desenvolvida para demonstrar a **integração entre Visão Compu
 Por meio de **detecção com YOLOv8 (Ultralytics)**, **persistência em MongoDB** e um **dashboard interativo em Streamlit**, o sistema realiza o fluxo completo:  
 📸 **Captura → 🤖 Processamento → 💾 Armazenamento → 📊 Visualização**
 
----
+--- 
 
 ## 🧠 Objetivo Geral
 > Entregar um protótipo funcional e integrado, evidenciando a comunicação entre a Visão Computacional e o backend, com **persistência real dos dados** em um banco NoSQL (MongoDB) e **visualização dinâmica em tempo real**.
