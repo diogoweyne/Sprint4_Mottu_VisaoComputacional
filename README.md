@@ -1,16 +1,14 @@
-# 🏍️ Sprint 4 – Visão Computacional e Dashboard em Tempo Real | Desafio Mottu
+# 🏍️ Sprint 4 – Visão Computacional, MongoDB e Dashboard em Tempo Real | Desafio Mottu
 
-## 🎯 Descrição do Projeto
-Este projeto faz parte da **Sprint 4 - Disruptive Architectures: IoT, IoB & Generative AI** do curso de **Análise e Desenvolvimento de Sistemas - FIAP**.
+A solução foi desenvolvida para demonstrar a **integração entre Visão Computacional, Banco de Dados e Análise de Dados em tempo real**, permitindo o **monitoramento automatizado de motos no pátio da Mottu**.
 
-A solução foi desenvolvida com o objetivo de demonstrar **integração entre Visão Computacional e Análise de Dados em tempo real**, permitindo o **monitoramento automatizado de motos no pátio da empresa**.
-
-Através do uso de **algoritmos de detecção (YOLOv8)** e um **dashboard interativo com Streamlit**, o sistema captura, processa e exibe informações sobre a localização e o status das motos em tempo real — criando um fluxo completo de dados do tipo **Captura → Processamento → Persistência → Visualização**.
+Por meio de **detecção com YOLOv8 (Ultralytics)**, **persistência em MongoDB** e um **dashboard interativo em Streamlit**, o sistema realiza o fluxo completo:  
+📸 **Captura → 🤖 Processamento → 💾 Armazenamento → 📊 Visualização**
 
 ---
 
 ## 🧠 Objetivo Geral
-> Demonstrar um protótipo funcional e integrado, evidenciando a comunicação entre a Visão Computacional e o backend, com persistência dos dados e visualização em tempo real via dashboard.
+> Entregar um protótipo funcional e integrado, evidenciando a comunicação entre a Visão Computacional e o backend, com **persistência real dos dados** em um banco NoSQL (MongoDB) e **visualização dinâmica em tempo real**.
 
 ---
 
@@ -18,11 +16,11 @@ Através do uso de **algoritmos de detecção (YOLOv8)** e um **dashboard intera
 
 | Etapa | Descrição | Tecnologias |
 |-------|------------|--------------|
-| **1️⃣ Captura** | Leitura de vídeo via webcam ou câmera simulada | OpenCV + YOLOv8 |
-| **2️⃣ Processamento** | Detecção automática de motos em tempo real com bounding boxes | Ultralytics YOLO |
-| **3️⃣ Persistência** | Salvamento das detecções em arquivo `deteccoes.csv` | Python + CSV |
-| **4️⃣ Visualização** | Dashboard interativo com métricas e histórico de detecções | Streamlit + Pandas |
-| **5️⃣ Integração** | Fluxo completo do dado (captura → API local → dashboard) | Python + Streamlit |
+| **1️⃣ Captura** | Leitura de vídeo via webcam | OpenCV |
+| **2️⃣ Processamento** | Detecção automática de motos com YOLOv8 | Ultralytics YOLO |
+| **3️⃣ Persistência** | Salvamento das detecções no **MongoDB** e em arquivo CSV | PyMongo + CSV |
+| **4️⃣ Visualização** | Dashboard interativo com métricas e histórico | Streamlit + Pandas |
+| **5️⃣ Integração** | Fluxo de dados em tempo real (detecção → banco → dashboard) | Python + MongoDB + Streamlit |
 
 ---
 
@@ -34,11 +32,11 @@ sprint4_mottu/
 │
 ├── src/
 │   ├── main.py              # Script principal de detecção (YOLO + OpenCV)
-│   ├── utils.py             # Função de persistência no CSV
-│   ├── dashboard.py         # Dashboard Streamlit (visualização e métricas)
+│   ├── utils.py             # Funções de persistência (MongoDB + CSV)
+│   ├── dashboard.py         # Dashboard em Streamlit (visualização)
 │   ├── yolov8n.pt           # Modelo YOLO pré-treinado
 │   ├── requirements.txt     # Dependências do projeto
-│   └── deteccoes.csv        # Registro das detecções
+│   └── deteccoes.csv        # Registro local das detecções
 │
 └── video/
     └── apresentacao_sprint4.mp4
@@ -50,11 +48,60 @@ sprint4_mottu/
 
 | Categoria | Tecnologias |
 |------------|--------------|
-| Linguagem | **Python 3.13** |
+| Linguagem | **Python**|
 | Visão Computacional | **YOLOv8 (Ultralytics)**, **OpenCV** |
+| Banco de Dados | **MongoDB** (via PyMongo) |
 | Dashboard | **Streamlit**, **Pandas** |
-| Persistência | **Arquivo CSV** (local) |
-| Outras Bibliotecas | datetime, os, requests |
+| Outras Bibliotecas | datetime, os, pymongo, ultralytics, csv |
+
+---
+
+## 🧩 Integração com MongoDB
+
+### 🧰 1️⃣ Instalação
+Baixe e instale o **MongoDB Community Server**:  
+🔗 [https://www.mongodb.com/try/download/community](https://www.mongodb.com/try/download/community)
+
+Durante a instalação:
+- Mantenha as opções padrão;
+- Instale também o **MongoDB Compass** (interface gráfica).
+
+---
+
+### ⚙️ 2️⃣ Conexão utilizada no projeto
+O projeto conecta ao banco **local** automaticamente:
+```python
+from pymongo import MongoClient
+
+client = MongoClient("mongodb://localhost:27017/")
+db = client["mottu"]
+colecao = db["deteccoes"]
+```
+
+Cada detecção é armazenada como documento JSON:
+```json
+{
+  "classe": "motorcycle",
+  "data_hora": "2025-11-07T20:52:44.123456"
+}
+```
+
+---
+
+### 🧭 3️⃣ Visualizando os dados no MongoDB Compass
+
+1. Abra o **MongoDB Compass**  
+2. Clique em **Add new connection**  
+3. Cole a string:
+   ```
+   mongodb://localhost:27017
+   ```
+4. Clique em **Connect**
+5. No menu lateral, abra:
+   ```
+   mottu → deteccoes
+   ```
+6. Veja os registros das detecções aparecendo em tempo real.
 
 ---
 
@@ -63,33 +110,19 @@ sprint4_mottu/
 ```
 [ Câmera / Webcam ]
         ↓
-[ main.py - YOLOv8 detecta motos em tempo real ]
+[ main.py - YOLOv8 detecta motos ]
         ↓
-[ utils.py - registra dados no arquivo deteccoes.csv ]
+[ utils.py - grava no MongoDB + CSV ]
         ↓
-[ dashboard.py - lê o arquivo e exibe dados em tempo real ]
+[ dashboard.py - lê dados e atualiza interface ]
         ↓
-[ Interface Streamlit - Dashboard com métricas e histórico ]
+[ Streamlit - Dashboard com métricas e histórico ]
 ```
-
----
-
-## 📊 Métricas de Performance (Simulação Realista)
-
-| Métrica | Valor |
-|----------|--------|
-| Tempo médio de detecção por frame | 0.12 segundos |
-| Precisão média (YOLOv8n) | 97% |
-| Atualização do dashboard | A cada 3 segundos |
-| Total de registros no teste | 128 detecções |
-| Tempo de execução contínua sem erro | 2 horas |
-
-
 ---
 
 ## 🧾 Execução do Projeto
 
-### 1️⃣ Instalar dependências
+### 1️⃣ Instalar as dependências
 ```bash
 pip install -r requirements.txt
 ```
@@ -99,10 +132,24 @@ pip install -r requirements.txt
 python main.py
 ```
 
+Cada vez que uma moto é detectada:
+- A imagem aparece destacada;
+- Os dados são gravados no MongoDB e no CSV.
+
+---
+
 ### 3️⃣ Rodar o dashboard
+Entre na pasta **src**:
 ```bash
-py -m streamlit run dashboard.py
+cd src
 ```
+Depois execute:
+```bash
+python -m streamlit run dashboard.py
+```
+
+Acesse o dashboard no navegador:  
+👉 [http://localhost:8501](http://localhost:8501)
 
 ---
 
@@ -114,5 +161,4 @@ py -m streamlit run dashboard.py
 ---
 
 ## 🏆 Conclusão
-Este projeto demonstra a aplicação prática de tecnologias de **Visão Computacional e IoT**, simulando o monitoramento automatizado de frotas para o desafio Mottu.  
-A entrega atende aos requisitos técnicos e evidencia a integração entre múltiplas disciplinas do curso, consolidando conceitos de **IA, persistência de dados e visualização interativa**.
+Este projeto demonstra a aplicação prática e integrada de **Visão Computacional, IoT e Persistência em Banco NoSQL**, simulando o monitoramento automatizado de frotas para o desafio **Mottu**.
