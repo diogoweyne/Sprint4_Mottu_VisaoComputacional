@@ -129,7 +129,7 @@ pip install -r requirements.txt
 
 ### 2️⃣ Rodar o script de detecção
 ```bash
-python main.py
+py main.py
 ```
 
 Cada vez que uma moto é detectada:
@@ -145,7 +145,7 @@ cd src
 ```
 Depois execute:
 ```bash
-python -m streamlit run dashboard.py
+py -m streamlit run dashboard.py
 ```
 
 Acesse o dashboard no navegador:  
